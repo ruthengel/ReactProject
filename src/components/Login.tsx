@@ -1,13 +1,16 @@
 import { FormEvent, useContext, useRef, useState } from "react"
-import { Modal, Box, Button, Fab, TextField, Stack } from "@mui/material"
+import { Modal, Box, Button, Fab, TextField, Stack, IconButton } from "@mui/material"
 import SendIcon from '@mui/icons-material/Send'
 import { UserContext } from "./HomePage"
 import { Action } from "../types/action"
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const Login = ({ Verified }: { Verified: Function }) => {
+
     const [open, setOpen] = useState(false)
     const [login, setLogin] = useState(true)
+    const [notlogin, setNotlogin] = useState(true)
     const nameRef = useRef<HTMLInputElement>(null)
     const passswordRef = useRef<HTMLInputElement>(null)
     const userContext = useContext(UserContext)
@@ -15,42 +18,29 @@ const Login = ({ Verified }: { Verified: Function }) => {
     if (!userContext)
         throw new Error("Profile must be used within a UserContext.Provider");
     const { user, userDispatch } = userContext;
-    const handleSubmit = (e: FormEvent) => {
-        console.log("submit");
 
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
         setLogin(false)
         if (nameRef.current?.value === user.firstName && passswordRef.current?.value == user.password) {
-            console.log("true");
-
             Verified(true)
+            setNotlogin(false)
             const action: Action = {
                 type: "CREATE",
                 data: {}
             }
             userDispatch(action)
         }
-        else {
-
-            // setLogin(true)
-        }
-
-
     }
 
-
-    const handleOpen = () => {
-        setOpen(!open)
-    }
-
-    return login && (<>
-        <Button sx={{
+    return (<>
+        {notlogin && <Button sx={{
             position: 'absolute',
             top: 20,
             left: 20,
             zIndex: 1300,
-        }} variant="contained" size="large" color="primary" onClick={handleOpen}>Login</Button>
-        <Modal open={open} onClose={handleOpen} aria-labelledby="login-modal-title" aria-describedby="login-modal-description" >
+        }} variant="contained" size="large" color="primary" onClick={() => { setOpen(true); setLogin(true) }}>Login</Button>}
+        {login && <Modal open={open} onClose={() => setOpen(false)} aria-labelledby="login-modal-title" aria-describedby="login-modal-description" >
             <Box
                 sx={{
                     width: 500,
@@ -62,6 +52,15 @@ const Login = ({ Verified }: { Verified: Function }) => {
                     mt: 5
                 }}
             >
+                <IconButton
+                    sx={{
+                        position: 'absolute',
+                        color: 'primary.main'
+                    }}
+                    onClick={() => setOpen(false)}
+                >
+                    <CloseIcon />
+                </IconButton>
                 <h2 id="login-modal-title" style={{ textAlign: 'center', marginBottom: '1rem' }}>Login</h2>
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -94,7 +93,7 @@ const Login = ({ Verified }: { Verified: Function }) => {
                     </Button>
                 </form>
             </Box>
-        </Modal>
+        </Modal>}
     </>)
 }
 export default Login

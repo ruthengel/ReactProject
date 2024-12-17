@@ -1,8 +1,9 @@
-import { Box, Button, Modal, TextField } from "@mui/material"
+import { Box, Button, IconButton, Modal, TextField } from "@mui/material"
 import { FormEvent, useContext, useRef, useState } from "react"
 import { UserContext } from "./HomePage"
 import { Action } from "../types/action"
 import SendIcon from '@mui/icons-material/Send'
+import CloseIcon from '@mui/icons-material/Close';
 
 const UpdateUser = () => {
     const [isupdate, setIsupdate] = useState(true)
@@ -33,7 +34,7 @@ const UpdateUser = () => {
         userDispatch(action)
     }
 
-    return isupdate && (<>
+    return (<>
         <Button
             sx={{
                 position: 'absolute',
@@ -44,11 +45,12 @@ const UpdateUser = () => {
             variant="contained"
             color="primary"
             size="large"
-            onClick={() => setOpen(!open)}
+            onClick={() => { setOpen(true); setIsupdate(true) }}
         >
             Update
         </Button>
-        <Modal
+        {isupdate && <Modal
+
             open={open}
             onClose={() => setOpen(false)}
             aria-labelledby="update-modal-title"
@@ -65,6 +67,16 @@ const UpdateUser = () => {
                     mt: 5
                 }}
             >
+
+                <IconButton
+                    sx={{
+                        position: 'absolute',
+                        color:'primary.main'
+                    }}
+                    onClick={() => setOpen(false)}
+                >
+                    <CloseIcon />
+                </IconButton>
                 <h2 id="update-modal-title" style={{ textAlign: 'center', marginBottom: '1rem' }}>
                     Update Details
                 </h2>
@@ -133,7 +145,7 @@ const UpdateUser = () => {
                     </Button>
                 </form>
             </Box>
-        </Modal>
+        </Modal>}
     </>)
 }
 export default UpdateUser
