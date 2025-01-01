@@ -5,40 +5,49 @@ import Login from "./Login"
 import VerifiedUser from "./VerifiedUser"
 import { Button } from "@mui/material"
 import axios, { AxiosError } from "axios"
-
 import { Password } from "@mui/icons-material"
 
-const handleLogUp = async (state: User, action: Action) => {
+const handleLogUp = async (user: User, action: Action): Promise<boolean> => {
 
-    try {
+    try {     
         const res = await axios.post('http://localhost:3000/api/user/register', action.data)
-        state = res.data.user
+        user = res.data.user
+        return true
     }
     catch (e) {
         if (axios.isAxiosError(e))
-            if (e.status === 400)
-                alert(`${e.message}`)
-    }
+            if (e.status === 400) {
+                alert(`error`)
+                return false
+            }
 
+
+    }
+    return true
 
 }
 
-const handleLogin = async (state: User, action: Action) => {
+const handleLogin = async (user: User, action: Action): Promise<boolean> => {
     try {
         const res = await axios.post('http://localhost:3000/api/user/login', action.data)
-        state = res.data.user
+        user = res.data.user
+        return true
     }
     catch (e) {
         if (axios.isAxiosError(e))
-            if (e.status === 401)
+            if (e.status === 401) {
                 alert(`${e.message}`)
+                return false
+            }
+
     }
+    return true
 }
 
-const handleUpdate = async (state: User, action: Action) => {
+const handleUpdate = async (user: User, action: Action) => {
     try {
         const res = await axios.put('http://localhost:3000/api/user/', action.data)
-        state = res.data.user
+        user = res.data.user
     }
     catch (e) {
         if (axios.isAxiosError(e))
@@ -47,20 +56,23 @@ const handleUpdate = async (state: User, action: Action) => {
     }
 }
 
-const userReducer = (state: User, action: Action): User => {
-
+const userReducer = (state: User, action: Action): any => {
+    let success: any
+    
     switch (action.type) {
         case 'LOGUP':
-            handleLogUp(state, action);
-
+            success = handleLogUp(state, action);
+            return success
         case 'LOGIN':
-            handleLogin(state, action)
+            success = handleLogin(state, action)
+            return true
         case 'UPDATE':
             handleUpdate(state, action)
+            break
         case 'DELETE':
-            return state
+            break
         default:
-            return state
+            break
 
     }
 
@@ -76,7 +88,7 @@ export const UserContext = createContext<UserContextType | null>(null)
 const HomePage = () => {
 
     const initialUser: User = {
-        firstName: "Hi!",
+        firstName: "",
         lastName: "",
         email: "",
         password: "",
@@ -84,9 +96,9 @@ const HomePage = () => {
         phone: ""
     }
 
+    const [verified, setVerified] = useState(false)
     const [login, setLogin] = useState(true)
     const [user, userDispatch] = useReducer(userReducer, initialUser)
-    const [verified, setVerified] = useState(false)
     const [very, setVery] = useState(false)
 
     const handleVerified = () => {

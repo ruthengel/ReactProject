@@ -5,7 +5,7 @@ import { UserContext } from "./HomePage"
 import { Action } from "../types/action"
 import CloseIcon from '@mui/icons-material/Close';
 
-
+// const Login = ({ Verified }: { Verified: Function }) => {
 const Login = ({ Verified }: { Verified: Function }) => {
 
     const [open, setOpen] = useState(false)
@@ -15,7 +15,7 @@ const Login = ({ Verified }: { Verified: Function }) => {
     const nameRef = useRef<HTMLInputElement>(null)
     const passswordRef = useRef<HTMLInputElement>(null)
     const userContext = useContext(UserContext)
-
+    let success: any
     if (!userContext)
         throw new Error("Profile must be used within a UserContext.Provider");
     const { user, userDispatch } = userContext;
@@ -30,11 +30,14 @@ const Login = ({ Verified }: { Verified: Function }) => {
             }
         }
         setLogin(false)
-        Verified(true)
         setNotlogin(false)
         if (typebutton)
-            action.type="LOGUP"
-        userDispatch(action)
+            action.type = "LOGUP"
+        success = userDispatch(action)
+        if(success)
+            Verified(true)
+        else
+            setNotlogin(true)
         // if (nameRef.current?.value === user.firstName && passswordRef.current?.value == user.password) {
         //     Verified(true)
         //     setNotlogin(false)
