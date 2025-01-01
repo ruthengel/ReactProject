@@ -4,22 +4,59 @@ import { Action } from "../types/action"
 import Login from "./Login"
 import VerifiedUser from "./VerifiedUser"
 import { Button } from "@mui/material"
+import axios, { AxiosError } from "axios"
 
+import { Password } from "@mui/icons-material"
+
+const handleLogUp = async (state: User, action: Action) => {
+
+    try {
+        const res = await axios.post('http://localhost:3000/api/user/register', action.data)
+        state = res.data.user
+    }
+    catch (e) {
+        if (axios.isAxiosError(e))
+            if (e.status === 400)
+                alert(`${e.message}`)
+    }
+
+
+}
+
+const handleLogin = async (state: User, action: Action) => {
+    try {
+        const res = await axios.post('http://localhost:3000/api/user/login', action.data)
+        state = res.data.user
+    }
+    catch (e) {
+        if (axios.isAxiosError(e))
+            if (e.status === 401)
+                alert(`${e.message}`)
+    }
+}
+
+const handleUpdate = async (state: User, action: Action) => {
+    try {
+        const res = await axios.put('http://localhost:3000/api/user/', action.data)
+        state = res.data.user
+    }
+    catch (e) {
+        if (axios.isAxiosError(e))
+            if (e.status === 404)
+                alert(`${e.message}`)
+    }
+}
 
 const userReducer = (state: User, action: Action): User => {
 
     switch (action.type) {
-        case 'CREATE':
-            return state
-        case 'UPDATE':          
-            return {
-                firstName: action.data.firstName || state.firstName,
-                lastName: action.data.lastName || state.lastName,
-                email: action.data.email || state.email,
-                password: action.data.password || state.password,
-                address: action.data.address || state.address,
-                phone: action.data.phone || state.phone
-            }
+        case 'LOGUP':
+            handleLogUp(state, action);
+
+        case 'LOGIN':
+            handleLogin(state, action)
+        case 'UPDATE':
+            handleUpdate(state, action)
         case 'DELETE':
             return state
         default:
@@ -36,25 +73,23 @@ type UserContextType = {
 
 export const UserContext = createContext<UserContextType | null>(null)
 
-
-
 const HomePage = () => {
-    
+
     const initialUser: User = {
-        firstName: "Ruth",
-        lastName: "Engel",
+        firstName: "Hi!",
+        lastName: "",
         email: "",
-        password: "123456",
+        password: "",
         address: "",
         phone: ""
     }
-    
+
     const [login, setLogin] = useState(true)
     const [user, userDispatch] = useReducer(userReducer, initialUser)
     const [verified, setVerified] = useState(false)
     const [very, setVery] = useState(false)
 
-    const handleVerified = (state: boolean) => {
+    const handleVerified = () => {
         setVerified(true)
     }
 
@@ -62,8 +97,6 @@ const HomePage = () => {
 
 
         <UserContext.Provider value={{ user, userDispatch }}>
-            {/* <Button onClick={handleLogin}>login</Button> */}
-            {/* {login && <Login Verified={handleVerified} />} */}
             <Login Verified={handleVerified} />
             <VerifiedUser very={verified} />
         </UserContext.Provider>
@@ -71,4 +104,5 @@ const HomePage = () => {
 
     </>)
 }
+
 export default HomePage

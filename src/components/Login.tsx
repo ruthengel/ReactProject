@@ -11,6 +11,7 @@ const Login = ({ Verified }: { Verified: Function }) => {
     const [open, setOpen] = useState(false)
     const [login, setLogin] = useState(true)
     const [notlogin, setNotlogin] = useState(true)
+    const [typebutton, setTypebutton] = useState(false)
     const nameRef = useRef<HTMLInputElement>(null)
     const passswordRef = useRef<HTMLInputElement>(null)
     const userContext = useContext(UserContext)
@@ -21,25 +22,49 @@ const Login = ({ Verified }: { Verified: Function }) => {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
-        setLogin(false)
-        if (nameRef.current?.value === user.firstName && passswordRef.current?.value == user.password) {
-            Verified(true)
-            setNotlogin(false)
-            const action: Action = {
-                type: "CREATE",
-                data: {}
+        const action: Action = {
+            type: "LOGIN",
+            data: {
+                firstName: nameRef.current?.value,
+                password: passswordRef.current?.value
             }
-            userDispatch(action)
         }
+        setLogin(false)
+        Verified(true)
+        setNotlogin(false)
+        if (typebutton)
+            action.type="LOGUP"
+        userDispatch(action)
+        // if (nameRef.current?.value === user.firstName && passswordRef.current?.value == user.password) {
+        //     Verified(true)
+        //     setNotlogin(false)
+        //     const action: Action = {
+        //         type: "CREATE",
+        //         data: {
+        //             firstName: nameRef.current?.value,
+        //             password: passswordRef.current?.value
+        //         }
+        //     }
+        //     userDispatch(action)
+        // }
     }
 
     return (<>
+
+        {notlogin && <Button sx={{
+            position: 'absolute',
+            top: 20,
+            left: 120,
+            zIndex: 1300,
+        }} variant="contained" size="large" color="primary" onClick={() => { setOpen(true); setLogin(true); setTypebutton(true) }} >LogUp</Button>
+        }
         {notlogin && <Button sx={{
             position: 'absolute',
             top: 20,
             left: 20,
             zIndex: 1300,
-        }} variant="contained" size="large" color="primary" onClick={() => { setOpen(true); setLogin(true) }}>Login</Button>}
+        }} variant="contained" size="large" color="primary" onClick={() => { setOpen(true); setLogin(true) }}>LogIn</Button>
+        }
         {login && <Modal open={open} onClose={() => setOpen(false)} aria-labelledby="login-modal-title" aria-describedby="login-modal-description" >
             <Box
                 sx={{
