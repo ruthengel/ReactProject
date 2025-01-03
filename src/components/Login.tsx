@@ -4,8 +4,8 @@ import SendIcon from '@mui/icons-material/Send'
 import { UserContext } from "./HomePage"
 import { Action } from "../types/action"
 import CloseIcon from '@mui/icons-material/Close';
+import axios, { AxiosResponse } from "axios"
 
-// const Login = ({ Verified }: { Verified: Function }) => {
 const Login = ({ Verified }: { Verified: Function }) => {
 
     const [open, setOpen] = useState(false)
@@ -15,43 +15,52 @@ const Login = ({ Verified }: { Verified: Function }) => {
     const nameRef = useRef<HTMLInputElement>(null)
     const passswordRef = useRef<HTMLInputElement>(null)
     const userContext = useContext(UserContext)
-    let success: any
     if (!userContext)
         throw new Error("Profile must be used within a UserContext.Provider");
     const { user, userDispatch } = userContext;
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
+        let res;
         const action: Action = {
-            type: "LOGIN",
+            type: "CREATE",
             data: {
                 firstName: nameRef.current?.value,
                 password: passswordRef.current?.value
             }
         }
         setLogin(false)
-        setNotlogin(false)
-        if (typebutton)
-            action.type = "LOGUP"
-        success = userDispatch(action)
-        if(success)
-            Verified(true)
-        else
-            setNotlogin(true)
-        // if (nameRef.current?.value === user.firstName && passswordRef.current?.value == user.password) {
-        //     Verified(true)
-        //     setNotlogin(false)
-        //     const action: Action = {
-        //         type: "CREATE",
-        //         data: {
-        //             firstName: nameRef.current?.value,
-        //             password: passswordRef.current?.value
-        //         }
-        //     }
-        //     userDispatch(action)
-        // }
-    }
+        if (typebutton) {
+            try {
+                res = await axios.post('http://localhost:3000/api/user/register', action.data)
+            }
+            catch (e) {
+                if (axios.isAxiosError(e))
+                    if (e.response?.status === 400) {
+                        alert(`${e.response.data.message}`)
+                    }
+            }
 
+        }
+        else {
+            try {
+                res = await axios.post('http://localhost:3000/api/user/login', action.data)
+            }
+            catch (e) {
+                if (axios.isAxiosError(e))
+                    if (e.response?.status === 401) {
+                        alert(`${e.response.data.message}`)
+                    }
+
+            }
+        }
+        if (res) {
+            setNotlogin(false)
+            Verified(true)
+            userDispatch(action)
+        }
+
+    }
     return (<>
 
         {notlogin && <Button sx={{
@@ -89,7 +98,7 @@ const Login = ({ Verified }: { Verified: Function }) => {
                 >
                     <CloseIcon />
                 </IconButton>
-                <h2 id="login-modal-title" style={{ textAlign: 'center', marginBottom: '1rem' }}>Login</h2>
+                <h2 id="login-modal-title" style={{ textAlign: 'center', marginBottom: '1rem' }}>Hi! Let's Started:)</h2>
                 <form onSubmit={handleSubmit}>
                     <TextField
                         fullWidth

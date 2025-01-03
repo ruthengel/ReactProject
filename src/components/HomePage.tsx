@@ -7,72 +7,32 @@ import { Button } from "@mui/material"
 import axios, { AxiosError } from "axios"
 import { Password } from "@mui/icons-material"
 
-const handleLogUp = async (user: User, action: Action): Promise<boolean> => {
+const userReducer = (state: User, action: Action): User => {
 
-    try {     
-        const res = await axios.post('http://localhost:3000/api/user/register', action.data)
-        user = res.data.user
-        return true
-    }
-    catch (e) {
-        if (axios.isAxiosError(e))
-            if (e.status === 400) {
-                alert(`error`)
-                return false
-            }
-
-
-    }
-    return true
-
-}
-
-const handleLogin = async (user: User, action: Action): Promise<boolean> => {
-    try {
-        const res = await axios.post('http://localhost:3000/api/user/login', action.data)
-        user = res.data.user
-        return true
-    }
-    catch (e) {
-        if (axios.isAxiosError(e))
-            if (e.status === 401) {
-                alert(`${e.message}`)
-                return false
-            }
-
-    }
-    return true
-}
-
-const handleUpdate = async (user: User, action: Action) => {
-    try {
-        const res = await axios.put('http://localhost:3000/api/user/', action.data)
-        user = res.data.user
-    }
-    catch (e) {
-        if (axios.isAxiosError(e))
-            if (e.status === 404)
-                alert(`${e.message}`)
-    }
-}
-
-const userReducer = (state: User, action: Action): any => {
-    let success: any
-    
     switch (action.type) {
-        case 'LOGUP':
-            success = handleLogUp(state, action);
-            return success
-        case 'LOGIN':
-            success = handleLogin(state, action)
-            return true
+        case 'CREATE':
+            return {
+                firstName: action.data.firstName ?? state.firstName,
+                lastName: state.lastName,
+                email: state.email,
+                password: action.data.password ?? state.password,
+                address: state.address,
+                phone: state.phone
+            }
         case 'UPDATE':
-            handleUpdate(state, action)
-            break
+            return {
+                firstName: action.data.firstName ?? state.firstName,
+                lastName: action.data.lastName ?? state.lastName,
+                email: action.data.email ?? state.email,
+                password: action.data.password ?? state.password,
+                address: action.data.address ?? state.address,
+                phone: action.data.phone ?? state.address
+            }
         case 'DELETE':
-            break
+            return state
         default:
-            break
+            return state
+
 
     }
 
@@ -95,25 +55,13 @@ const HomePage = () => {
         address: "",
         phone: ""
     }
-
     const [verified, setVerified] = useState(false)
-    const [login, setLogin] = useState(true)
     const [user, userDispatch] = useReducer(userReducer, initialUser)
-    const [very, setVery] = useState(false)
-
-    const handleVerified = () => {
-        setVerified(true)
-    }
-
     return (<>
-
-
         <UserContext.Provider value={{ user, userDispatch }}>
-            <Login Verified={handleVerified} />
+            <Login Verified={setVerified} />
             <VerifiedUser very={verified} />
         </UserContext.Provider>
-
-
     </>)
 }
 

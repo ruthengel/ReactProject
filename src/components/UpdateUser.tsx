@@ -4,6 +4,7 @@ import { UserContext } from "./HomePage"
 import { Action } from "../types/action"
 import SendIcon from '@mui/icons-material/Send'
 import CloseIcon from '@mui/icons-material/Close';
+import axios from "axios"
 
 const UpdateUser = () => {
     const [isupdate, setIsupdate] = useState(true)
@@ -17,8 +18,8 @@ const UpdateUser = () => {
     const userContext = useContext(UserContext)
     if (!userContext)
         throw new Error("Profile must be used within a UserContext.Provider");
-    const { user, userDispatch } = userContext
-    const handleSubmit = (e: FormEvent) => {
+    const { userDispatch } = userContext
+    const handleSubmit = async (e: FormEvent) => {
         const action: Action = {
             type: "UPDATE",
             data: {
@@ -30,8 +31,20 @@ const UpdateUser = () => {
                 address: addressRef.current?.value
             }
         }
+        let res;
+        try {
+            res = await axios.put('http://localhost:3000/api/user/', action.data)
+        }
+        catch (e) {
+            if (axios.isAxiosError(e)){            
+                if (e.response?.status === 404)
+                    alert(`${e.response?.data.message}`)
+            }
+        }
         setIsupdate(false)
-        userDispatch(action)
+        if (res){        
+            userDispatch(action)
+        }
     }
 
     return (<>
@@ -71,7 +84,7 @@ const UpdateUser = () => {
                 <IconButton
                     sx={{
                         position: 'absolute',
-                        color:'primary.main'
+                        color: 'primary.main'
                     }}
                     onClick={() => setOpen(false)}
                 >
