@@ -5,6 +5,7 @@ import { UserContext } from "./HomePage"
 import { Action } from "../types/action"
 import CloseIcon from '@mui/icons-material/Close';
 import axios, { AxiosResponse } from "axios"
+import { LoginOutlined } from "@mui/icons-material"
 
 const Login = ({ Verified }: { Verified: Function }) => {
 
@@ -33,6 +34,7 @@ const Login = ({ Verified }: { Verified: Function }) => {
         if (typebutton) {
             try {
                 res = await axios.post('http://localhost:3000/api/user/register', action.data)
+                action.data.id = res.data.userId
             }
             catch (e) {
                 if (axios.isAxiosError(e))
@@ -40,26 +42,24 @@ const Login = ({ Verified }: { Verified: Function }) => {
                         alert(`${e.response.data.message}`)
                     }
             }
-
         }
         else {
             try {
                 res = await axios.post('http://localhost:3000/api/user/login', action.data)
+                action.data.id = res.data.user.id
             }
             catch (e) {
                 if (axios.isAxiosError(e))
                     if (e.response?.status === 401) {
                         alert(`${e.response.data.message}`)
                     }
-
             }
         }
-        if (res) {
+        if (res) {         
             setNotlogin(false)
             Verified(true)
             userDispatch(action)
         }
-
     }
     return (<>
 

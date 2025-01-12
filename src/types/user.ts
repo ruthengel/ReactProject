@@ -7,4 +7,5 @@ export type User = {
     password: string,
     address: string,
     phone: string,
+    id?:number
 }

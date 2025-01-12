@@ -18,8 +18,9 @@ const UpdateUser = () => {
     const userContext = useContext(UserContext)
     if (!userContext)
         throw new Error("Profile must be used within a UserContext.Provider");
-    const { userDispatch } = userContext
+    const { user, userDispatch } = userContext
     const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
         const action: Action = {
             type: "UPDATE",
             data: {
@@ -28,21 +29,24 @@ const UpdateUser = () => {
                 password: passwordRef.current?.value,
                 phone: phoneRef.current?.value,
                 email: emailRef.current?.value,
-                address: addressRef.current?.value
+                address: addressRef.current?.value,
+                id: user.id
             }
         }
         let res;
         try {
-            res = await axios.put('http://localhost:3000/api/user/', action.data)
+            res = await axios.put('http://localhost:3000/api/user/', action.data, {
+                headers: { 'user-id': user.id }
+            })
         }
         catch (e) {
-            if (axios.isAxiosError(e)){            
+            if (axios.isAxiosError(e)) {
                 if (e.response?.status === 404)
                     alert(`${e.response?.data.message}`)
             }
         }
         setIsupdate(false)
-        if (res){        
+        if (res) {
             userDispatch(action)
         }
     }
@@ -161,4 +165,5 @@ const UpdateUser = () => {
         </Modal>}
     </>)
 }
+
 export default UpdateUser

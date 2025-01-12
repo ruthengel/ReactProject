@@ -12,12 +12,13 @@ const userReducer = (state: User, action: Action): User => {
     switch (action.type) {
         case 'CREATE':
             return {
-                firstName: action.data.firstName ?? state.firstName,
-                lastName: state.lastName,
-                email: state.email,
-                password: action.data.password ?? state.password,
-                address: state.address,
-                phone: state.phone
+                firstName: action.data.firstName ?? '',
+                lastName: '',
+                email: '',
+                password: action.data.password ?? '',
+                address: '',
+                phone: '',
+                id: action.data.id ?? 0
             }
         case 'UPDATE':
             return {
@@ -26,7 +27,8 @@ const userReducer = (state: User, action: Action): User => {
                 email: action.data.email ?? state.email,
                 password: action.data.password ?? state.password,
                 address: action.data.address ?? state.address,
-                phone: action.data.phone ?? state.address
+                phone: action.data.phone ?? state.address,
+                id: state.id
             }
         case 'DELETE':
             return state
