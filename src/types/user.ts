@@ -9,3 +9,7 @@ export type User = {
     phone: string,
     id?:number
 }
+export type UserContextType = {
+    user: User;
+    userDispatch: React.Dispatch<Action>;
+};

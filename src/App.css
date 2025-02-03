@@ -3,8 +3,18 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
 
+}
+body {
+  background-image: url('/antipasta-1645401_640.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 50;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

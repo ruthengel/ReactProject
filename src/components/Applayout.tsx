@@ -1,35 +1,29 @@
 import { Outlet } from "react-router-dom"
 import NavBar from "./NavBar"
-import { Box, Container, Paper } from "@mui/material"
+import HomePage, { UserContext, userReducer } from "./HomePage"
+import { User } from "../types/user"
+import { useReducer } from "react"
 
 const Applayout = () => {
+    const initialUser: User = {
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        address: "",
+        phone: ""
+    }
+    const [user, userDispatch] = useReducer(userReducer, initialUser)
+
     return (
         <>
-
-            <NavBar />
-            <Container
-                maxWidth="lg"
-                sx={{
-                    marginTop: "20px", 
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Paper
-                    elevation={3}
-                    sx={{
-                        width: "100%",
-                        padding: "20px",
-                        borderRadius: "10px",
-                        backgroundColor: "#f5f5f5", 
-                    }}
-                >
-                   
-                    <Outlet />
-                </Paper>
-            </Container>
+            <UserContext value={{ user, userDispatch }}>
+                <NavBar />
+                <HomePage />
+                <Outlet />
+            </UserContext>
         </>
     )
-}
+};
+
 export default Applayout

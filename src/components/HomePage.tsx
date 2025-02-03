@@ -1,13 +1,13 @@
-import { createContext, useReducer, useState } from "react"
-import { User } from "../types/user"
+import { createContext, useState } from "react"
+import { User, UserContextType } from "../types/user"
 import { Action } from "../types/action"
-import Login from "./Login"
-import VerifiedUser from "./VerifiedUser"
-import { Button } from "@mui/material"
-import axios, { AxiosError } from "axios"
-import { Password } from "@mui/icons-material"
+import Login from "./user/Login"
+import VerifiedUser from "./user/VerifiedUser"
+import { Icecream } from "@mui/icons-material"
+import { Typography } from "@mui/material"
+import { useLocation } from "react-router-dom"
 
-const userReducer = (state: User, action: Action): User => {
+export const userReducer = (state: User, action: Action): User => {
 
     switch (action.type) {
         case 'CREATE':
@@ -40,30 +40,18 @@ const userReducer = (state: User, action: Action): User => {
 
 }
 
-type UserContextType = {
-    user: User;
-    userDispatch: React.Dispatch<Action>;
-};
-
 export const UserContext = createContext<UserContextType | null>(null)
 
 const HomePage = () => {
+    const location = useLocation();
 
-    const initialUser: User = {
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        address: "",
-        phone: ""
-    }
     const [verified, setVerified] = useState(false)
-    const [user, userDispatch] = useReducer(userReducer, initialUser)
     return (<>
-        <UserContext.Provider value={{ user, userDispatch }}>
-            <Login Verified={setVerified} />
-            <VerifiedUser very={verified} />
-        </UserContext.Provider>
+        {location.pathname === '/' && <Typography variant="button" component="div" sx={{ fontSize: "60px", color: "white", textAlign: "center", display: "flex", alignItems: "center", fontFamily: "'Roboto', sans-serif", fontWeight: 1000 }}>
+            Recipe for happiness?<br /> Just give it a try –<br /> every bite is a new story.
+        </Typography>}
+        <Login Verified={setVerified} />
+        <VerifiedUser very={verified} />
     </>)
 }
 
