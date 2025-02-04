@@ -1,29 +1,3 @@
-// import { observer } from "mobx-react-lite"
-// import recipeStore from "./recipeStore"
-// import { useState } from "react"
-// import { Recipe } from "../../types/recipe"
-// import ShowRecipe from "./ShowRecipe"
-// import { Outlet, useNavigate } from "react-router-dom";
-
-// const RecipecList = observer(() => {
-//     const [selectRecipe, setSelectRecipe] = useState<Recipe>()
-//     const navigate = useNavigate();
-
-//     return (<>
-//         <div>
-//             <h1>רשימת מתכונים</h1>
-//             <ul>
-//                 {recipeStore.recipes.map((recipe) => (
-//                     <li key={recipe.id} onClick={() =>{navigate(`${recipe.id}`) }} style={{ cursor: "pointer", color: "blue" }} >
-//                         {recipe.title}
-//                     </li>
-//                 ))}
-//             </ul>
-//             <Outlet/>
-//         </div>
-//     </>)
-// })
-// export default RecipecList
 import recipeStore from "./recipeStore";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";

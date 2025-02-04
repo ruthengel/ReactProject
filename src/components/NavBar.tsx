@@ -1,5 +1,5 @@
 import { Box, IconButton, Toolbar, Drawer, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
-import { Restaurant, Fastfood, Cake, LocalPizza, Icecream, Liquor, LocalBar, LocalDining, Kitchen } from '@mui/icons-material'; import { useContext, useState } from "react";
+import { Restaurant} from '@mui/icons-material'; import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "./HomePage";
 

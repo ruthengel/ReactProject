@@ -3,7 +3,6 @@ import { User, UserContextType } from "../types/user"
 import { Action } from "../types/action"
 import Login from "./user/Login"
 import VerifiedUser from "./user/VerifiedUser"
-import { Icecream } from "@mui/icons-material"
 import { Typography } from "@mui/material"
 import { useLocation } from "react-router-dom"
 
@@ -44,7 +43,6 @@ export const UserContext = createContext<UserContextType | null>(null)
 
 const HomePage = () => {
     const location = useLocation();
-
     const [verified, setVerified] = useState(false)
     return (<>
         {location.pathname === '/' && <Typography variant="button" component="div" sx={{ fontSize: "60px", color: "white", textAlign: "center", display: "flex", alignItems: "center", fontFamily: "'Roboto', sans-serif", fontWeight: 1000 }}>

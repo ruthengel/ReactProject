@@ -45,5 +45,7 @@ class RecipeStore {
     getRecipeById(id: number): Recipe | undefined {
         return this.recipes.find(r => r.id === id)
     }
+
+    
 }
 export default new RecipeStore()
